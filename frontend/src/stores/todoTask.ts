@@ -7,7 +7,7 @@ export const useTodoTaskStore = defineStore('todo', {
     todoTasks: [] as TodoTask[],
     loading: false,
     error: null as string | null,
-    sortBy: 'priority' as 'created_at' | 'priority' | 'due_date'
+    sortBy: 'priority' as 'created_at' | 'priority' | 'due_date' | 'completed'
   }),
 
   getters: {
@@ -31,6 +31,11 @@ export const useTodoTaskStore = defineStore('todo', {
             if (!b.due_date) return -1
             return new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
           })
+        
+        case 'completed':
+          // 完了済み順（完了済みは最後に）
+          return tasks.sort((a, b) => (b.completed ? 1 : -1) - (a.completed ? 1 : -1))
+          
           
         default:
           return tasks
@@ -39,7 +44,7 @@ export const useTodoTaskStore = defineStore('todo', {
   },
 
   actions: {
-    setSortBy(sort: 'created_at' | 'priority' | 'due_date') {
+    setSortBy(sort: 'created_at' | 'priority' | 'due_date' | 'completed') {
       this.sortBy = sort
     },
     

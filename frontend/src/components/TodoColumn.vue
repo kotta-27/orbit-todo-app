@@ -27,20 +27,30 @@
       >
         追加順
       </button>
+      <div class="separator"></div>
+      <button
+        class="completed-btn"
+        :class="{ active: todoStore.sortBy === 'completed' }"
+        @click="setSort('completed')"
+      >
+        完了済み
+      </button>
     </div>
 
-    <div v-for="todo in todoStore.sortedTasks" :key="todo.id">
-      <TaskCard
-        :title="todo.title"
-        :description="todo.description"
-        :completed="todo.completed"
-        :date="formatDate(todo.created_at)"
-        :due_date="todo.due_date"
-        :priority="todo.priority"
-        @toggle="toggleTodoTask(todo)"
-        @edit="openEditModal(todo)"
-        @delete="deleteTodoTask(todo.id)"
-      />
+    <div class="task-list-scroll">
+      <div v-for="todo in visibleTasks" :key="todo.id">
+        <TaskCard
+          :title="todo.title"
+          :description="todo.description"
+          :completed="todo.completed"
+          :date="formatDate(todo.created_at)"
+          :due_date="todo.due_date"
+          :priority="todo.priority"
+          @toggle="toggleTodoTask(todo)"
+          @edit="openEditModal(todo)"
+          @delete="deleteTodoTask(todo.id)"
+        />
+      </div>
     </div>
     <AddTaskModal
       :show="showCreateModal"
@@ -59,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useTodoTaskStore } from '@/stores/todoTask'
 import AddTaskModal from './AddTaskModal.vue'
 import EditTaskModal from './EditTaskModal.vue'
@@ -76,7 +86,7 @@ onMounted(() => {
   todoStore.fetchTodos()
 })
 
-const setSort = (sortBy: 'created_at' | 'priority' | 'due_date') => {
+const setSort = (sortBy: 'created_at' | 'priority' | 'due_date' | 'completed') => {
   todoStore.setSortBy(sortBy)
 }
 
@@ -99,6 +109,16 @@ function formatDate(dateStr: string) {
   const d = new Date(dateStr)
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
+
+// 完了済みのタスクを非表示にする。
+// TodoStoreのsortByがcompletedの場合は、完了済みのタスクを表示する。
+const visibleTasks = computed(() => {
+  if (todoStore.sortBy === 'completed') {
+    return todoStore.sortedTasks.filter((t) => t.completed)
+  } else {
+    return todoStore.sortedTasks.filter((t) => !t.completed)
+  }
+})
 </script>
 
 <style scoped>
@@ -143,10 +163,14 @@ function formatDate(dateStr: string) {
 .add-task-btn:hover {
   background: #217dbb;
 }
-
+.task-list-scroll {
+  min-height: 500px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
 .sort-options {
   display: flex;
-  gap: 0.5rem;
   margin-bottom: 1rem;
   overflow-x: auto;
   padding-bottom: 0.5rem;
@@ -157,19 +181,43 @@ function formatDate(dateStr: string) {
   border: none;
   border-radius: 4px;
   padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
 }
-
 .sort-btn:hover {
   background: #e4e4e4;
 }
-
 .sort-btn.active {
   background: #3498db;
   color: white;
   font-weight: bold;
+}
+
+.completed-btn {
+  background: #f1f1f1;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.completed-btn:hover {
+  background: #e4e4e4;
+}
+.completed-btn.active {
+  background: #28a745;
+  color: white;
+  font-weight: bold;
+}
+
+.separator {
+  width: 2px;
+  border-right: 1px solid #bfbfbf;
 }
 </style>

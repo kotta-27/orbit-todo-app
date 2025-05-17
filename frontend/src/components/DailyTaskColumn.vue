@@ -15,7 +15,21 @@
       </div>
       <button class="add-task-btn" @click="openCreateModal">＋</button>
     </div>
-    <div v-for="task in todayTasks">
+
+    <div class="daily-tabs">
+      <button
+        class="daily-tab"
+        :class="{ active: activeTab === 'today' }"
+        @click="activeTab = 'today'"
+      >
+        今日
+      </button>
+      <button class="daily-tab" :class="{ active: activeTab === 'all' }" @click="activeTab = 'all'">
+        全て
+      </button>
+    </div>
+
+    <div v-for="task in filteredDailyTasks" :key="task.id">
       <TaskCard
         :title="task.title"
         :description="task.description"
@@ -59,13 +73,20 @@ const dailyTaskStore = useDailyTaskStore()
 const { showCreateModal, openCreateModal, handleCreateTask } = useTaskCreate('daily')
 const { showEditModal, editTarget, openEditModal, handleEditSubmit } = useTaskEdit('daily')
 
-const getToday = () => {
-  const days = ['日', '月', '火', '水', '木', '金', '土']
-  return days[new Date().getDay()]
-}
+const activeTab = ref<'today' | 'all'>('today')
+
+const today = new Date()
+const weekDays = ['日', '月', '火', '水', '木', '金', '土']
+const todayLabel = weekDays[today.getDay()]
+
+const filteredDailyTasks = computed(() => {
+  if (activeTab.value === 'all') return dailyTaskStore.dailyTasks
+  // 今日の曜日が含まれる日課のみ
+  return dailyTaskStore.dailyTasks.filter((task) => task.days.split(',').includes(todayLabel))
+})
 
 const todayTasks = computed(() =>
-  dailyTaskStore.dailyTasks.filter((task) => task.days.split(',').includes(getToday())),
+  dailyTaskStore.dailyTasks.filter((task) => task.days.split(',').includes(todayLabel)),
 )
 
 onMounted(() => {
@@ -144,5 +165,24 @@ const deleteDailyTask = async (id: number) => {
   align-items: center;
   margin-top: auto;
   margin-bottom: auto;
+}
+.daily-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.daily-tabs button {
+  padding: 0.4rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background: #eee;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.daily-tabs button.active {
+  background: #3498db;
+  color: #fff;
 }
 </style>

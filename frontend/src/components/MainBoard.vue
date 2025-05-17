@@ -18,6 +18,6 @@ import TodoColumn from './TodoColumn.vue'
   display: flex;
   gap: 2rem;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 0.5rem;
 }
 </style>

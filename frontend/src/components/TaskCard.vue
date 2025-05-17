@@ -21,8 +21,11 @@
           </div>
         </div>
         <p v-html="descriptionHtml" class="task-description"></p>
-        <div v-if="date" class="todo-add-date">追加: {{ date }}</div>
-        <div v-if="due_date" class="todo-due-date">期限: {{ due_date }}</div>
+        <!-- <div v-if="date" class="todo-add-date">追加: {{ date }}</div> -->
+        <div v-if="due_date">
+          <span class="todo-due-date">期限: {{ due_date }}</span>
+          <span class="due-remaining">{{ dueRemainingText }}</span>
+        </div>
         <div v-if="days" class="task-days">曜日: {{ days }}</div>
         <slot></slot>
       </div>
@@ -45,7 +48,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { marked } from 'marked'
-import MarkdownPreview from './MarkdownPreview.vue'
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -85,6 +87,19 @@ const formatDate = (dateStr: string) => {
   const date = new Date(dateStr)
   return date.toLocaleDateString()
 }
+
+const dueRemainingText = computed(() => {
+  if (!props.due_date) return ''
+  const due = new Date(props.due_date)
+  const today = new Date()
+  // 時間を無視して日付だけ比較
+  due.setHours(0, 0, 0, 0)
+  today.setHours(0, 0, 0, 0)
+  const diff = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  if (diff > 0) return `あと${diff}日`
+  if (diff === 0) return '今日'
+  return '期限切れ'
+})
 </script>
 
 <style scoped>
@@ -104,11 +119,6 @@ const formatDate = (dateStr: string) => {
 .todo-card:hover {
   box-shadow: 0 4px 16px rgba(52, 152, 219, 0.18);
   background: #ebe8e8;
-  cursor: pointer;
-}
-.todo-card.completed {
-  opacity: 0.6;
-  text-decoration: line-through;
 }
 .todo-content {
   display: flex;
@@ -260,6 +270,13 @@ const formatDate = (dateStr: string) => {
 
 .past-due {
   color: #e74c3c;
+  font-weight: bold;
+}
+
+.due-remaining {
+  margin-left: 0.5em;
+  font-size: 0.9em;
+  color: #e67e22;
   font-weight: bold;
 }
 </style>

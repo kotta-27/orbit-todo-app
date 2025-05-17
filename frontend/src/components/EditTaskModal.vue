@@ -65,18 +65,20 @@ const props = defineProps({
 const emit = defineEmits(['close', 'add'])
 
 const daysOfWeek = [
-  { value: '日', label: '日' },
   { value: '月', label: '月' },
   { value: '火', label: '火' },
   { value: '水', label: '水' },
   { value: '木', label: '木' },
   { value: '金', label: '金' },
   { value: '土', label: '土' },
+  { value: '日', label: '日' },
 ]
 
 // 今日の曜日をデフォルト選択
 const todayIndex = new Date().getDay()
-const todayValue = daysOfWeek[todayIndex].value
+const todayIndexFromMonday = (todayIndex + 6) % 7
+const todayValue = daysOfWeek[todayIndexFromMonday].value
+console.log('todayValue edit', todayValue)
 
 const localTask = ref({
   title: '',
