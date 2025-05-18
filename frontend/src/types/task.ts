@@ -13,6 +13,7 @@ export interface HabitTask {
   title: string
   description: string
   completed: boolean
+  importance: number
 }
 
 export interface TodoTask {

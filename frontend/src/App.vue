@@ -25,7 +25,7 @@ const changeTab = (tab: 'tasks' | 'analytics') => {
     </main>
 
     <footer>
-      <p>© 2024 Orbital - シンプルなタスク管理ツール</p>
+      <p>© 2025 Orbital - シンプルなタスク管理ツール</p>
     </footer>
   </div>
 </template>
@@ -34,7 +34,7 @@ const changeTab = (tab: 'tasks' | 'analytics') => {
 :root {
   --primary-color: #3498db;
   --secondary-color: #2c3e50;
-  --background-color: #f5f7fa;
+  --background-color: #e0e0e0;
   --text-color: #2c3e50;
   --text-secondary: #7f8c8d;
   --border-color: #e9ecef;

@@ -44,7 +44,7 @@ module Api
       private
 
       def habit_task_params
-        params.require(:habit_task).permit(:title, :description, :completed)
+        params.require(:habit_task).permit(:title, :description, :completed, :importance)
       end
     end
   end

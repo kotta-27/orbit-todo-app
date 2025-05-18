@@ -14,6 +14,21 @@
             class="task-input"
           />
         </div>
+        <div class="habit-importance-container" v-if="modalTitle === '習慣'">
+          <label>重要度:</label>
+          <div class="star-input">
+            <span
+              v-for="n in 3"
+              :key="n"
+              class="star"
+              :class="{ active: n <= localTask.importance, hovered: n <= hoverIndex }"
+              @click="localTask.importance = n"
+              @mouseenter="hoverIndex = n"
+              @mouseleave="hoverIndex = 0"
+              >★</span
+            >
+          </div>
+        </div>
         <div v-if="modalTitle === 'ToDo'" class="task-todo-option-container">
           <div class="task-input-due-date-container">
             <div class="task-input-due-date-title">期限 :</div>
@@ -67,6 +82,8 @@ const props = defineProps({
 })
 const emit = defineEmits(['close', 'add'])
 
+const hoverIndex = ref(0)
+
 const daysOfWeek = [
   { value: '月', label: '月' },
   { value: '火', label: '火' },
@@ -81,7 +98,6 @@ const daysOfWeek = [
 const todayIndex = new Date().getDay()
 const todayIndexFromMonday = (todayIndex + 6) % 7
 const todayValue = daysOfWeek[todayIndexFromMonday].value
-console.log('todayValue add', todayValue)
 
 const localTask = ref({
   title: '',
@@ -90,6 +106,7 @@ const localTask = ref({
   due_date: '',
   daysArr: props.showWeekdays ? [todayValue] : [],
   priority: 3,
+  importance: 1,
 })
 
 watch(
@@ -104,6 +121,7 @@ watch(
           due_date: props.initialTask.due_date,
           daysArr: props.initialTask.days ? props.initialTask.days.split(',') : [],
           priority: props.initialTask.priority || 3,
+          importance: props.initialTask.importance || 1,
         }
       } else {
         localTask.value = {
@@ -113,6 +131,7 @@ watch(
           due_date: '',
           daysArr: props.showWeekdays ? [todayValue] : [],
           priority: 3,
+          importance: 1,
         }
       }
     }
@@ -135,6 +154,9 @@ function submit() {
   }
   if (props.modalTitle === 'ToDo') {
     payload.priority = localTask.value.priority
+  }
+  if (props.modalTitle === '習慣') {
+    payload.importance = localTask.value.importance
   }
   emit('add', payload)
   close()
@@ -307,5 +329,43 @@ function submit() {
 .weekday-label:hover {
   background: #eaf4fb;
   /* border: 1.5px solid #3498db; */
+}
+
+.habit-importance-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(131, 212, 255, 0.5);
+  padding: 0.5rem;
+  gap: 0.7rem;
+  margin: 0.1rem 0;
+}
+.habit-importance-container label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+.star-input {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border 0.2s;
+  user-select: none;
+  border: 2px solid rgba(131, 255, 170, 0.1);
+  border-radius: 4px;
+  padding: 0rem 0.2rem;
+}
+
+.star.hovered {
+  border-color: #ffd700;
+}
+
+.star.active {
+  color: #ffd700;
 }
 </style>

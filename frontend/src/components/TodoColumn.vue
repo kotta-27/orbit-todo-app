@@ -164,8 +164,8 @@ const visibleTasks = computed(() => {
   background: #217dbb;
 }
 .task-list-scroll {
-  min-height: 500px;
-  max-height: 500px;
+  min-height: 70vh;
+  max-height: 70vh;
   overflow-y: auto;
   padding-right: 4px;
 }

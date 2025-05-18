@@ -21,12 +21,16 @@
           </div>
         </div>
         <p v-html="descriptionHtml" class="task-description"></p>
-        <!-- <div v-if="date" class="todo-add-date">追加: {{ date }}</div> -->
         <div v-if="due_date">
           <span class="todo-due-date">期限: {{ due_date }}</span>
           <span class="due-remaining">{{ dueRemainingText }}</span>
         </div>
         <div v-if="days" class="task-days">曜日: {{ days }}</div>
+        <div class="habit-stars" v-if="importance && importance > 0">
+          <span v-for="star in 3" :key="star" class="star" :class="{ active: star <= importance }"
+            >★</span
+          >
+        </div>
         <slot></slot>
       </div>
       <div
@@ -57,6 +61,7 @@ const props = defineProps({
   due_date: { type: String, default: '' },
   days: { type: String, default: '' },
   priority: { type: Number, default: 0 },
+  importance: { type: Number, default: 0 },
 })
 const hover = ref<boolean>(false)
 const showMenu = ref<boolean>(false)
@@ -119,6 +124,9 @@ const dueRemainingText = computed(() => {
 .todo-card:hover {
   box-shadow: 0 4px 16px rgba(52, 152, 219, 0.18);
   background: #ebe8e8;
+}
+.todo-card.completed {
+  border-right: 10px solid #28a745;
 }
 .todo-content {
   display: flex;
@@ -278,5 +286,13 @@ const dueRemainingText = computed(() => {
   font-size: 0.9em;
   color: #e67e22;
   font-weight: bold;
+}
+
+.habit-stars .star {
+  color: #ccc;
+  font-size: 1.1em;
+}
+.habit-stars .star.active {
+  color: #ffd700;
 }
 </style>

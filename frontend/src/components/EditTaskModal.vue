@@ -14,6 +14,21 @@
             class="task-input"
           />
         </div>
+        <div class="habit-importance-container" v-if="modalTitle === '習慣'">
+          <label>重要度:</label>
+          <div class="star-input">
+            <span
+              v-for="n in 3"
+              :key="n"
+              class="star"
+              :class="{ active: n <= localTask.importance, hovered: n <= hoverIndex }"
+              @click="localTask.importance = n"
+              @mouseenter="hoverIndex = n"
+              @mouseleave="hoverIndex = 0"
+              >★</span
+            >
+          </div>
+        </div>
         <div v-if="modalTitle === 'ToDo'" class="task-todo-option-container">
           <div class="task-input-due-date-container">
             <div class="task-input-due-date-title">期限 :</div>
@@ -78,7 +93,6 @@ const daysOfWeek = [
 const todayIndex = new Date().getDay()
 const todayIndexFromMonday = (todayIndex + 6) % 7
 const todayValue = daysOfWeek[todayIndexFromMonday].value
-console.log('todayValue edit', todayValue)
 
 const localTask = ref({
   title: '',
@@ -87,7 +101,10 @@ const localTask = ref({
   due_date: '',
   daysArr: props.showWeekdays ? [todayValue] : [],
   priority: 3,
+  importance: 1,
 })
+
+const hoverIndex = ref(0)
 
 watch(
   () => props.show,
@@ -101,6 +118,7 @@ watch(
           daysArr: props.selectedTask.days ? props.selectedTask.days.split(',') : [],
           due_date: props.selectedTask.due_date,
           priority: props.selectedTask.priority || 2,
+          importance: props.selectedTask.importance || 1,
         }
       } else {
         localTask.value = {
@@ -110,6 +128,7 @@ watch(
           daysArr: props.showWeekdays ? [todayValue] : [],
           due_date: '',
           priority: 3,
+          importance: 1,
         }
       }
     }
@@ -135,6 +154,9 @@ function submit() {
   }
   if (props.selectedTask && props.selectedTask.id) {
     payload.id = props.selectedTask.id
+  }
+  if (props.modalTitle === '習慣') {
+    payload.importance = localTask.value.importance
   }
   emit('add', payload)
   close()
@@ -181,18 +203,17 @@ function submit() {
 }
 .task-input-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
   background-color: rgba(131, 255, 170, 0.5);
   padding: 0.5rem;
 }
 .task-input-title {
-  width: 100%;
   font-weight: bold;
 }
 .task-input {
   width: 70%;
-  margin: 0 auto;
+  margin-left: 2rem;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -310,5 +331,43 @@ function submit() {
 .weekday-label:hover {
   background: #eaf4fb;
   /* border: 1.5px solid #3498db; */
+}
+.habit-importance-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(131, 255, 170, 0.5);
+  padding: 0.5rem;
+  gap: 0.7rem;
+  margin: 0.1rem 0;
+}
+
+.habit-importance-container label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+.star-input {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border 0.2s;
+  user-select: none;
+  border: 2px solid rgba(131, 255, 170, 0.1);
+  border-radius: 4px;
+  padding: 0.2rem;
+}
+
+.star.hovered {
+  border-color: #ffd700;
+}
+
+.star.active {
+  color: #ffd700;
 }
 </style>

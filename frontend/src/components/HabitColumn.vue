@@ -4,16 +4,20 @@
       <span class="column-title">習慣</span>
       <button class="add-task-btn" @click="openCreateModal">＋</button>
     </div>
-    <div v-for="habit in habitTaskStore.habitTasks">
-      <TaskCard
-        :key="habit.id"
-        :title="habit.title"
-        :description="habit.description"
-        :completed="habit.completed"
-        @toggle="toggleHabitTask(habit)"
-        @edit="openEditModal(habit)"
-        @delete="deleteHabitTask(habit.id)"
-      />
+
+    <div class="task-list-scroll">
+      <div v-for="habit in habitTaskStore.habitTasks">
+        <TaskCard
+          :key="habit.id"
+          :title="habit.title"
+          :description="habit.description"
+          :completed="habit.completed"
+          :importance="habit.importance"
+          @toggle="toggleHabitTask(habit)"
+          @edit="openEditModal(habit)"
+          @delete="deleteHabitTask(habit.id)"
+        />
+      </div>
     </div>
     <AddTaskModal
       :show="showCreateModal"
@@ -102,5 +106,11 @@ const deleteHabitTask = async (id: number) => {
 }
 .add-task-btn:hover {
   background: #217dbb;
+}
+.task-list-scroll {
+  min-height: 75vh;
+  max-height: 75vh;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 </style>

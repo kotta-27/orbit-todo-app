@@ -3,6 +3,7 @@
     <HabitColumn />
     <DailyTaskColumn />
     <TodoColumn />
+    <WeeklyReportBox />
   </div>
 </template>
 
@@ -10,13 +11,14 @@
 import HabitColumn from './HabitColumn.vue'
 import DailyTaskColumn from './DailyTaskColumn.vue'
 import TodoColumn from './TodoColumn.vue'
+import WeeklyReportBox from './WeeklyReportBox.vue'
 </script>
 
 <style scoped>
 .main-board {
-  width: 85%;
+  width: 100%;
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   justify-content: center;
   margin-top: 0.5rem;
 }

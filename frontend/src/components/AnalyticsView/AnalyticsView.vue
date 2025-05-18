@@ -26,6 +26,9 @@
         <h3>期限切れタスク</h3>
         <div class="overdue-tasks">{{ overdueTasksCount }}件</div>
       </div>
+      <div class="analytics-card">
+        <AiPromptBox />
+      </div>
     </div>
   </div>
 </template>
@@ -36,6 +39,7 @@ import { useTodoTaskStore } from '@/stores/todoTask'
 import DailyCompletionChart from './DailyCompletionChart.vue'
 import PriorityDistributionChart from './PriorityDistributionChart.vue'
 import { format } from 'date-fns'
+import AiPromptBox from '../AiPromptBox.vue'
 
 const todoStore = useTodoTaskStore()
 
@@ -70,7 +74,7 @@ const overdueTasksCount = computed(() => {
 
 <style scoped>
 .analytics-container {
-  padding: 2rem;
+  padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -79,7 +83,6 @@ const overdueTasksCount = computed(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
 }
 
 .analytics-card {

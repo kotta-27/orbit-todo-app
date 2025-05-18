@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       resources :habit_tasks, only: [:index, :show, :create, :update, :destroy]
       resources :daily_tasks, only: [:index, :show, :create, :update, :destroy]
       resources :todo_tasks, only: [:index, :show, :create, :update, :destroy]
+      post "gemini", to: "gemini#create"
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
